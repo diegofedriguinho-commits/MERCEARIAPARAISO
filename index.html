@@ -99,7 +99,24 @@ window.calcularTroco=function(){let recebido=parseFloat($('valorRecebido').value
 window.relVendasDia=function(){const hoje=new Date().toLocaleDateString(); const vendasHoje=vendas.filter(v=>v.data && v.data.seconds && new Date(v.data.seconds*1000).toLocaleDateString()==hoje); let html='<h2 class="font-bold">VENDAS DO DIA '+hoje+'</h2>'+vendasHoje.map(v=>'<div class="card"><b>VENDA '+String(v.numVenda).padStart(5,'0')+'</b> - R$'+Number(v.total).toFixed(2)+' - '+v.clienteNome+' - '+v.forma+'</div>').join('') || '<p>Nenhuma venda</p>'; $('resultadoRel').innerHTML=html;}
 window.relVendas=function(){let totalDin=vendas.filter(v=>v.forma=='Dinheiro').reduce((a,b)=>a+b.total,0); let totalCart=vendas.filter(v=>v.forma=='Cartao').reduce((a,b)=>a+b.total,0); let totalPix=vendas.filter(v=>v.forma=='Pix').reduce((a,b)=>a+b.total,0); let totalPrazo=vendas.filter(v=>v.forma=='Prazo').reduce((a,b)=>a+b.total,0); $('resultadoRel').innerHTML='<div class="card"><h2 class="font-bold">VENDAS POR PAGAMENTO</h2><p>Dinheiro: R$'+totalDin.toFixed(2)+'</p><p>Cartao: R$'+totalCart.toFixed(2)+'</p><p>Pix: R$'+totalPix.toFixed(2)+'</p><p>Prazo: R$'+totalPrazo.toFixed(2)+'</p><p class="font-bold">TOTAL: R$'+vendas.reduce((a,b)=>a+b.total,0).toFixed(2)+'</p></div>'}
 window.iniciarFechamento=function(){let valor = saldoCaixa; $('valorDeveriaTer').innerText = valor.toFixed(2); $('divFechamento').style.display='block'; $('btnConfirmarFech').style.display='block'; $('valorContado').focus(); $('valorContado').oninput = function(){let contado = parseFloat($('valorContado').value)||0; let diferenca = contado - valor; if(diferenca == 0) $('resultadoConferencia').innerHTML = '<span style="color:green">CAIXA FECHOU! R$0.00</span>'; if(diferenca > 0) $('resultadoConferencia').innerHTML = '<span style="color:blue">SOBROU: R$'+diferenca.toFixed(2)+'</span>'; if(diferenca < 0) $('resultadoConferencia').innerHTML = '<span style="color:red">FALTOU: R$'+Math.abs(diferenca).toFixed(2)+'</span>';};}
-window.confirmarFechamento=async function(){imprimirFechamento(); if(saldoCaixa > 0) await addDoc(collection(db,"caixa"),{tipo:'retirada_fechamento',valor:-saldoCaixa,desc:'Retirada Fechamento',data:serverTimestamp(), senhaSistema: SENHA_FIREBASE}); localStorage.removeItem('caixaAberto'); $('divFechamento').style.display='none'; $('btnConfirmarFech').style.display='none'; $('valorContado').value=''; alert("Caixa Fechado! Amanha tera que abrir novamente."); location.reload();}
+window.confirmarFechamento=async function(){
+  imprimirFechamento(); 
+  
+  // 1. Retira todo o dinheiro do caixa
+  if(saldoCaixa > 0) 
+    await addDoc(collection(db,"caixa"),{tipo:'retirada_fechamento',valor:-saldoCaixa,desc:'Retirada Fechamento',data:serverTimestamp(), senhaSistema: SENHA_FIREBASE});
+
+  // 2. ZERA O SALDO INICIAL DO DIA LANÇANDO UMA SAÍDA INVERSA
+  if(saldoInicial > 0)
+    await addDoc(collection(db,"caixa"),{tipo:'saida_abertura',valor:-saldoInicial,desc:'Zeramento Saldo Inicial',data:serverTimestamp(), senhaSistema: SENHA_FIREBASE});
+
+  localStorage.removeItem('caixaAberto');
+  $('divFechamento').style.display='none';
+  $('btnConfirmarFech').style.display='none';
+  $('valorContado').value='';
+  alert("Caixa Fechado! Amanha tera que abrir novamente.");
+  location.reload();
+}
 window.imprimirFechamento=function(){let entradas=movCaixa.filter(m=>m.tipo=='entrada').reduce((a,b)=>a+(b.valor||0),0); let saidas=movCaixa.filter(m=>m.tipo=='saida').reduce((a,b)=>a+(b.valor||0),0); let contado = parseFloat($('valorContado').value)||0; let diferenca = contado - saldoCaixa; let html='<div style="width:300px;font-family:monospace;text-align:center"><h2>'+loja.nome+' - FECHAMENTO</h2><p>'+new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString()+'</p><hr><p style="text-align:left">Saldo Inicial: R$'+saldoInicial.toFixed(2)+'</p><p style="text-align:left">Entradas: R$'+entradas.toFixed(2)+'</p><p style="text-align:left">Saidas: R$'+Math.abs(saidas).toFixed(2)+'</p><p style="text-align:left">Saldo Sistema: R$'+saldoCaixa.toFixed(2)+'</p><hr><p style="text-align:left">Valor Contado: R$'+contado.toFixed(2)+'</p><h3>DIFERENCA: R$'+diferenca.toFixed(2)+'</h3><hr><p>Responsavel: _______________</p></div>'; $('areaImpressao').innerHTML=html; $('areaImpressao').style.display='block'; window.print(); $('areaImpressao').style.display='none';}
 
 window.listarReceber=function(){$('listaReceber').innerHTML=receber.filter(r=>(r.saldo||0)>0).map(r=>'<div class="card"><b>'+r.cliente+'</b><br>Venda: '+String(r.numVenda).padStart(5,'0')+'<br>Saldo: R$'+Number(r.saldo||0).toFixed(2)+'</div>').join('') || '<p>Sem contas a receber</p>'}
