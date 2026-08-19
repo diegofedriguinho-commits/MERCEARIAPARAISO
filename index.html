@@ -2,15 +2,40 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="tituloSistema">MERCEARIA PARAISO PDV V18.30</title>
+<title id="tituloSistema">MERCEARIA PARAISO PDV V18.31</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<style>body{background:#f1f5f9;font-family:'Segoe UI',sans-serif;padding-bottom:90px}.btn{padding:10px 14px;border-radius:8px;font-weight:bold;cursor:pointer}.input{padding:10px;border:1px solid #ccc;border-radius:8px;width:100%}.card{background:white;padding:16px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}.aba{display:none}.ativa{display:block}.menu{display:grid;grid-template-columns:repeat(auto-fit, minmax(70px, 1fr));position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #ddd;z-index:10}.menu button{padding:10px 4px;font-size:10px;font-weight:bold;white-space:nowrap}.menu button.on{background:#2563eb;color:white}.hidden{display:none}@media print{body *{visibility:hidden}#areaImpressao, #areaImpressao *{visibility:visible}#areaImpressao{position:absolute;left:0;top:0;width:100%}}</style>
+<style>
+body{background:#f1f5f9;font-family:'Segoe UI',sans-serif;padding-bottom:90px}
+.btn{padding:10px 14px;border-radius:8px;font-weight:bold;cursor:pointer}
+.input{padding:10px;border:1px solid #ccc;border-radius:8px;width:100%}
+.card{background:white;padding:16px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.aba{display:none}.ativa{display:block}
+.menu{display:grid;grid-template-columns:repeat(auto-fit, minmax(70px, 1fr));position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #ddd;z-index:10}
+.menu button{padding:10px 4px;font-size:10px;font-weight:bold;white-space:nowrap}
+.menu button.on{background:#2563eb;color:white}
+.hidden{display:none}
+.marca-dagua{position:fixed;bottom:55px;right:10px;font-size:10px;color:#2563eb;opacity:0.7;font-weight:bold;z-index:9}
+.user-info{position:fixed;top:10px;right:10px;background:#2563eb;color:white;padding:4px 10px;border-radius:20px;font-size:12px;z-index:11}
+@media print{body *{visibility:hidden}#areaImpressao, #areaImpressao *{visibility:visible}#areaImpressao{position:absolute;left:0;top:0;width:100%}}
+</style>
 </head>
 <body>
 
+<div class="marca-dagua">Sistema D2 SISTEMAS</div>
+<div id="userInfo" class="user-info hidden"></div>
 <div id="areaImpressao" style="display:none"></div>
 
-<div id="telaLogin" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"><div class="card w-80 text-center"><h2 id="nomeLojaLogin" class="text-2xl font-bold mb-2">MERCEARIA PARAISO</h2><select id="usuarioLogin" class="input mb-2"><option value="">Selecione</option><option value="caixa">CAIXA - 1234</option><option value="gerente">GERENTE - 9999</option></select><input id="senhaLogin" type="password" class="input mb-2" placeholder="Senha"><button onclick="logar()" class="w-full btn bg-blue-600 text-white">ENTRAR</button><p id="erroLogin" class="text-red-500 text-sm mt-2"></p></div></div>
+<div id="telaLogin" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+<div class="card w-80 text-center">
+<h2 id="nomeLojaLogin" class="text-2xl font-bold mb-2">MERCEARIA PARAISO</h2>
+<p class="text-xs text-gray-500 mb-2"></p>
+<select id="usuarioLogin" class="input mb-2"><option value="">Selecione</option><option value="caixa">CAIXA - 1234</option><option value="gerente">GERENTE - 9999</option></select>
+<input id="senhaLogin" type="password" class="input mb-2" placeholder="Senha">
+<button onclick="window.logar()" class="w-full btn bg-blue-600 text-white">ENTRAR</button>
+<p id="erroLogin" class="text-red-500 text-sm mt-2"></p>
+<p class="text-[10px] text-gray-400 mt-3">Sistema por D2 SISTEMAS</p>
+</div>
+</div>
 
 <div class="p-2 pb-24">
 <div id="alertaEstoque" class="card bg-red-100 border-l-4 border-red-500 mb-2 hidden"><h2 class="font-bold text-red-700">⚠️ ESTOQUE BAIXO</h2><div id="listaAlertaEstoque"></div></div>
@@ -33,38 +58,85 @@
 
 <div id="caixa" class="aba"><div class="grid md:grid-cols-2 gap-2"><div class="card"><h2 class="font-bold mb-2">RESUMO CAIXA</h2><p>Saldo: <b class="text-green-600 text-xl">R$ <span id="saldoCaixa">0.00</span></b></p><hr class="my-1"><p>Entradas Mês: <b class="text-green-600">R$ <span id="entradasMes">0.00</span></b></p><p>Saídas Mês: <b class="text-red-600">R$ <span id="saidasMes">0.00</span></b></p><hr class="my-1"><p>Saldo Mês: <b class="text-blue-600 text-2xl">R$ <span id="saldoMes">0.00</span></b></p><div id="divFechamento" class="mt-3 p-2 bg-yellow-100 rounded hidden"><p class="font-bold">CONFERÊNCIA DA GAVETA</p><p>Deveria ter: R$ <span id="valorDeveriaTer">0.00</span></p><input id="valorContado" type="number" step="0.01" class="input mt-1" placeholder="Valor Contado"><p id="resultadoConferencia" class="font-bold mt-1"></p></div><button onclick="iniciarFechamento()" class="w-full btn bg-orange-500 text-white mt-2">INICIAR FECHAMENTO</button><button onclick="confirmarFechamento()" id="btnConfirmarFech" class="w-full btn bg-red-600 text-white mt-2 hidden">CONFIRMAR E ZERAR</button></div><div class="card"><h2 class="font-bold mb-2">MOVIMENTAÇÃO</h2><input id="mValor" type="number" class="input mb-2" placeholder="Valor"><input id="mDesc" class="input mb-2" placeholder="Descrição"><button onclick="entradaCaixa()" class="btn bg-green-600 text-white">ENTRADA</button><button onclick="saidaCaixa()" class="btn bg-red-600 text-white">SAÍDA</button><hr class="my-2"><h3 class="font-bold">RECEBIMENTO</h3><select id="recCliente" onchange="carregarDividas()" class="input mb-2"><option value="">Selecione Cliente</option></select><div id="divDividas"></div></div></div></div></div>
 
-<nav class="menu"><button onclick="mostrarAba('venda')" id="btn-venda" class="on">VENDAS</button><button onclick="mostrarAba('produtos')" id="btn-produtos">PRODUTOS</button><button onclick="mostrarAba('clientes')" id="btn-clientes">CLIENTES</button><button onclick="mostrarAba('fornecedores')" id="btn-fornecedores">FORNEC</button><button onclick="mostrarAba('loja')" id="btn-loja">LOJA</button><button onclick="mostrarAba('receber')" id="btn-receber">RECEBER</button><button onclick="mostrarAba('pagar')" id="btn-pagar">PAGAR</button><button onclick="mostrarAba('relatorios')" id="btn-relatorios">RELAT</button><button onclick="mostrarAba('caixa')" id="btn-caixa">CAIXA</button><button onclick="sair()">SAIR</button></nav>
+<nav class="menu"><button onclick="window.mostrarAba('venda')" id="btn-venda" class="on">VENDAS</button><button onclick="window.mostrarAba('produtos')" id="btn-produtos">PRODUTOS</button><button onclick="window.mostrarAba('clientes')" id="btn-clientes">CLIENTES</button><button onclick="window.mostrarAba('fornecedores')" id="btn-fornecedores">FORNEC</button><button onclick="window.mostrarAba('loja')" id="btn-loja">LOJA</button><button onclick="window.mostrarAba('receber')" id="btn-receber">RECEBER</button><button onclick="window.mostrarAba('pagar')" id="btn-pagar">PAGAR</button><button onclick="window.mostrarAba('relatorios')" id="btn-relatorios">RELAT</button><button onclick="window.mostrarAba('caixa')" id="btn-caixa">CAIXA</button><button onclick="window.sair()">SAIR</button></nav>
 
-<script type="module">
+  <script type="module">
 
+const $ = id => document.getElementById(id);
+
+const CONFIG_CLIENTE = {
+  nome: "MERCEARIA PARAISO",
+  projectId: "mercearia-paraiso",
+  apiKey: "AIzaSyAXxrkC5188jhlCZTkm1RXlbPkErSzvkUg",
+  authDomain: "mercearia-paraiso.firebaseapp.com"
+}
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, getDocs, setDoc, writeBatch, query, limit, orderBy } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAXxrkC5188jhlCZTkm1RXlbPkErSzvkUg",
-  authDomain: "mercearia-paraiso.firebaseapp.com",
-  projectId: "mercearia-paraiso",
+  apiKey: CONFIG_CLIENTE.apiKey,
+  authDomain: CONFIG_CLIENTE.authDomain,
+  projectId: CONFIG_CLIENTE.projectId,
   storageBucket: "mercearia-paraiso.firebasestorage.app",
   messagingSenderId: "415422197156",
   appId: "1:415422197156:web:d6e7d55a013b2edf58a531"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 $('nomeLojaLogin').innerText = CONFIG_CLIENTE.nome;
-$('tituloSistema').innerText = CONFIG_CLIENTE.nome + " PDV V18.30";
+$('tituloSistema').innerText = CONFIG_CLIENTE.nome + " PDV V18.31";
 $('lNome').value = CONFIG_CLIENTE.nome;
 
 let produtos=[], clientes=[], fornecedores=[], vendas=[], receber=[], pagar=[], movCaixa=[], loja={nome:CONFIG_CLIENTE.nome,end:'',tel:''}, carrinho=[], subtotal=0, total=0, saldoCaixa=0, ultimoNumVenda=0;
 let usuarioLogado=null; const SENHA_ZERAR = "LOLA2025";
-let permissoes = {caixa: {senha: '1234', podeEstornar: false, podeFecharCaixa: false}, gerente: {senha: '9999', podeEstornar: true, podeFecharCaixa: true}}
+let permissoes = {caixa: {senha: '1234', nome: 'CAIXA', podeEstornar: false, podeFecharCaixa: false}, gerente: {senha: '9999', nome: 'GERENTE', podeEstornar: true, podeFecharCaixa: true}}
 
 window.mostrarAba=id=>{document.querySelectorAll('.aba').forEach(a=>a.classList.remove('ativa'));$(id).classList.add('ativa');document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('on'));$(`btn-${id}`).classList.add('on');}
-window.logar=()=>{let user = $('usuarioLogin').value; let senha = $('senhaLogin').value; if(permissoes[user] && permissoes[user].senha == senha){usuarioLogado = user; $('telaLogin').classList.add('hidden'); verificarPermissoes(); carregarTudo();} else {$('erroLogin').innerText = 'Usuário ou Senha inválidos!';}}
-window.sair=()=>{usuarioLogado = null; $('telaLogin').classList.remove('hidden'); $('senhaLogin').value=''; location.reload();}
-function verificarPermissoes(){if($('btnConfirmarFech')){$('btnConfirmarFech').disabled =!permissoes[usuarioLogado].podeFecharCaixa; if(!permissoes[usuarioLogado].podeFecharCaixa) $('btnConfirmarFech').innerText = 'SÓ GERENTE';}}
+
+window.logar=()=>{
+  let user = $('usuarioLogin').value;
+  let senha = $('senhaLogin').value;
+  if(permissoes[user] && permissoes[user].senha == senha){
+    localStorage.setItem('usuarioLogado', user);
+    usuarioLogado = user;
+    $('telaLogin').classList.add('hidden');
+    verificarPermissoes();
+    carregarTudo();
+  } else {
+    $('erroLogin').innerText = 'Usuário ou Senha inválidos!';
+  }
+}
+
+window.sair=()=>{
+  localStorage.removeItem('usuarioLogado');
+  usuarioLogado = null;
+  $('telaLogin').classList.remove('hidden');
+  $('senhaLogin').value='';
+  location.reload();
+}
+
+function verificarPermissoes(){
+  if(!usuarioLogado) return;
+  $('userInfo').classList.remove('hidden');
+  $('userInfo').innerText = permissoes[usuarioLogado].nome;
+  if($('btnConfirmarFech')){
+    $('btnConfirmarFech').disabled =!permissoes[usuarioLogado].podeFecharCaixa;
+    if(!permissoes[usuarioLogado].podeFecharCaixa) $('btnConfirmarFech').innerText = 'SÓ GERENTE';
+  }
+}
+
+window.onload = () => {
+  let userSalvo = localStorage.getItem('usuarioLogado');
+  if(userSalvo && permissoes[userSalvo]){
+    usuarioLogado = userSalvo;
+    $('telaLogin').classList.add('hidden');
+    verificarPermissoes();
+    carregarTudo();
+  }
+}
 
 function carregarTudo(){
 function verificarEstoqueBaixo(){let baixos = produtos.filter(p => (p.estoque||0) > 0 && (p.estoque||0) <= 5); if(baixos.length > 0){$('alertaEstoque').classList.remove('hidden'); $('listaAlertaEstoque').innerHTML = baixos.map(p=>`<p>${p.nome}: <b>${p.estoque}</b> un</p>`).join('');} else {$('alertaEstoque').classList.add('hidden');}}
@@ -83,7 +155,7 @@ window.carregarClientesRecebimento=()=>{$('recCliente').innerHTML='<option value
 window.carregarDividas=()=>{let clienteId=$('recCliente').value; let dividas=receber.filter(r=>r.clienteId==clienteId && (r.saldo||0)>0); $('divDividas').innerHTML=dividas.map(d=>`<div class="border p-2 rounded mb-1"><b>Venda ${String(d.numVenda).padStart(5,'0')}</b><br>Saldo: R$${Number(d.saldo).toFixed(2)}<input id="pag${d.id}" type="number" step="0.01" class="input mt-1" placeholder="Valor a Pagar"><button onclick="receberParcial('${d.id}')" class="btn bg-green-600 text-white w-full mt-1">RECEBER</button></div>`).join('') || '<p>Sem dívidas</p>'}
 window.receberParcial=async(id)=>{let valor=parseFloat($(`pag${id}`).value); if(!valor) return alert("Digite valor"); let conta=receber.find(r=>r.id==id); let novoSaldo = (conta.saldo||0) - valor; if(novoSaldo<0) return alert("Valor maior que dívida"); await updateDoc(doc(db,"receber",id),{valorPago: (conta.valorPago||0)+valor, saldo:novoSaldo}); await addDoc(collection(db,"caixa"),{tipo:'entrada',valor:valor,desc:`Receb. Cliente ${conta.cliente}`,data:serverTimestamp()}); alert("Recebido!"); $(`pag${id}`).value='';}
 
-window.imprimirCupom=(venda)=>{let itensHTML = venda.itens.map(i=>`${i.nome}<br>${i.qtd}x R$${Number(i.preco).toFixed(2)} = R$${Number(i.total).toFixed(2)}`).join('<br>'); let html=`<div style="width:300px;font-family:monospace;font-size:12px"><h2 style="text-align:center">${loja.nome}</h2><p style="text-align:center">${loja.end}<br>Tel: ${loja.tel}</p><hr><p>VENDA: ${String(venda.numVenda).padStart(5,'0')}<br>DATA: ${new Date(venda.data.seconds*1000).toLocaleString()}<br>CLIENTE: ${venda.clienteNome}</p><hr>${itensHTML}<hr><p>SUBTOTAL: R$${Number(venda.subtotal).toFixed(2)}</p><p>DESCONTO: R$${Number(venda.desconto).toFixed(2)}</p><h3>TOTAL: R$${Number(venda.total).toFixed(2)}</h3><p>FORMA: ${venda.forma}</p><p>TROCO: R$${Number(venda.troco).toFixed(2)}</p><hr><p style="text-align:center">OBRIGADO VOLTE SEMPRE!</p></div>`; $('areaImpressao').innerHTML=html; $('areaImpressao').style.display='block'; window.print(); $('areaImpressao').style.display='none';}
+window.imprimirCupom=(venda)=>{let itensHTML = venda.itens.map(i=>`${i.nome}<br>${i.qtd}x R$${Number(i.preco).toFixed(2)} = R$${Number(i.total).toFixed(2)}`).join('<br>'); let html=`<div style="width:300px;font-family:monospace;font-size:12px"><h2 style="text-align:center">${loja.nome}</h2><p style="text-align:center">${loja.end}<br>Tel: ${loja.tel}</p><hr><p>VENDA: ${String(venda.numVenda).padStart(5,'0')}<br>DATA: ${new Date(venda.data.seconds*1000).toLocaleString()}<br>CLIENTE: ${venda.clienteNome}</p><hr>${itensHTML}<hr><p>SUBTOTAL: R$${Number(venda.subtotal).toFixed(2)}</p><p>DESCONTO: R$${Number(venda.desconto).toFixed(2)}</p><h3>TOTAL: R$${Number(venda.total).toFixed(2)}</h3><p>FORMA: ${venda.forma}</p><p>TROCO: R$${Number(venda.troco).toFixed(2)}</p><hr><p style="text-align:center">OBRIGADO VOLTE SEMPRE!</p><p style="text-align:center;font-size:9px">Sistema: D2 SISTEMAS</p></div>`; $('areaImpressao').innerHTML=html; $('areaImpressao').style.display='block'; window.print(); $('areaImpressao').style.display='none';}
 window.imprimirRelatorio=()=>{let conteudo = $('resultadoRel').innerHTML; if(conteudo=='') return alert("Gere um relatório primeiro"); $('areaImpressao').innerHTML = `<h2 style="text-align:center">${loja.nome} - RELATÓRIO</h2>`+conteudo; $('areaImpressao').style.display='block'; window.print(); $('areaImpressao').style.display='none';}
 
 window.finalizarVenda=async()=>{if(carrinho.length==0)return alert("Carrinho vazio");let forma=$('formaPag').value; let clienteId=$('clienteVenda').value; let cliente=clientes.find(c=>c.id==clienteId); let desconto=parseFloat($('desconto').value)||0; let troco=parseFloat($('troco').innerText)||0;if(forma=='Prazo' &&!clienteId) return alert("Selecione um cliente");let numVenda = ultimoNumVenda + 1;let vendaData={numVenda, itens:carrinho,subtotal,desconto,total,forma,clienteId,clienteNome:cliente?.nome||'Avulso',troco,data:serverTimestamp()}; let vendaRef=await addDoc(collection(db,"vendas"),vendaData); for(let i of carrinho){let p=produtos.find(x=>x.id==i.id);let novoEstoque = (p.estoque||0) - i.qtd;await updateDoc(doc(db,"produtos",i.id),{estoque:novoEstoque})}if(forma!='Prazo'){await addDoc(collection(db,"caixa"),{tipo:'entrada',valor:total,desc:`Venda ${forma}`,data:serverTimestamp()});}else if(clienteId){await addDoc(collection(db,"receber"),{clienteId,cliente:cliente.nome,valorTotal:total,valorPago:0,saldo:total,vendaId:vendaRef.id,numVenda,data:serverTimestamp()})}imprimirCupom({...vendaData, data:{seconds:Date.now()/1000}}); carrinho=[];subtotal=0;total=0;$('desconto').value=0;$('valorRecebido').value=0;$('troco').innerText='0.00';$('formaPag').value='Dinheiro';mostrarTroco();atualizarCarrinho(); alert("Venda finalizada!")}
@@ -116,7 +188,7 @@ window.addCarrinho=async id=>{let p=produtos.find(x=>x.id==id);if(!p||(p.estoque
 window.remCarrinho=async id=>{let item=carrinho.find(i=>i.id==id);if(item.qtd>1){item.qtd--; item.total=item.qtd*item.preco}else{carrinho=carrinho.filter(i=>i.id!=id)}atualizarCarrinho();}
 window.atualizarCarrinho=()=>{$('carrinho').innerHTML=carrinho.map(i=>`<div class="flex justify-between border-b py-1"><div>${i.nome}</div><div><button onclick="remCarrinho('${i.id}')" class="bg-red-500 text-white px-2 rounded">-</button> ${i.qtd} <button onclick="addCarrinho('${i.id}')" class="bg-green-500 text-white px-2 rounded">+</button></div><div>R$${i.total.toFixed(2)}</div></div>`).join('');subtotal=carrinho.reduce((a,i)=>a+i.total,0);$('subtotal').innerText=subtotal.toFixed(2); calcularTotal();}
 window.calcularTotal=()=>{let desc=parseFloat($('desconto').value)||0; total=subtotal-desc; $('total').innerText=total.toFixed(2); calcularTroco();}
-window.mostrarTroco=()=>{if($('formaPag').value=='Dinheiro'){$('divTroco').style.display = 'block'} else {$('divTroco').style.display = 'none'; $('valorRecebido').value = 0; calcularTroco()}}
+window.mostrarTroco=()=>{if($('formaPag').value=='Dinheiro'){$('divTroco').style.display = 'block'} else {$('divTro$('divTroco').style.display = 'none'; $('valorRecebido').value = 0; calcularTroco()}}
 window.calcularTroco=()=>{let recebido=parseFloat($('valorRecebido').value)||0; $('troco').innerText=(recebido-total).toFixed(2);}
 
 window.relVendasDia=()=>{const hoje=new Date().toLocaleDateString(); const vendasHoje=vendas.filter(v=>v.data?.seconds && new Date(v.data.seconds*1000).toLocaleDateString()==hoje); let html=`<h2 class="font-bold">VENDAS DO DIA ${hoje}</h2>`+vendasHoje.map(v=>`<div class="card"><b>VENDA ${String(v.numVenda).padStart(5,'0')}</b> - R$${Number(v.total).toFixed(2)} - ${v.clienteNome} - ${v.forma}</div>`).join('') || '<p>Nenhuma venda</p>'; $('resultadoRel').innerHTML=html;}
