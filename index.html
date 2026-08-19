@@ -36,6 +36,11 @@
 <nav class="menu"><button onclick="mostrarAba('venda')" id="btn-venda" class="on">VENDAS</button><button onclick="mostrarAba('produtos')" id="btn-produtos">PRODUTOS</button><button onclick="mostrarAba('clientes')" id="btn-clientes">CLIENTES</button><button onclick="mostrarAba('fornecedores')" id="btn-fornecedores">FORNEC</button><button onclick="mostrarAba('loja')" id="btn-loja">LOJA</button><button onclick="mostrarAba('receber')" id="btn-receber">RECEBER</button><button onclick="mostrarAba('pagar')" id="btn-pagar">PAGAR</button><button onclick="mostrarAba('relatorios')" id="btn-relatorios">RELAT</button><button onclick="mostrarAba('caixa')" id="btn-caixa">CAIXA</button><button onclick="sair()">SAIR</button></nav>
 
 <script type="module">
+
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, getDocs, setDoc, writeBatch, query, limit, orderBy } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAXxrkC5188jhlCZTkm1RXlbPkErSzvkUg",
   authDomain: "mercearia-paraiso.firebaseapp.com",
@@ -45,15 +50,8 @@ const firebaseConfig = {
   appId: "1:415422197156:web:d6e7d55a013b2edf58a531"
 };
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, getDocs, setDoc, writeBatch, query, limit, orderBy } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: CONFIG_CLIENTE.apiKey,
-  authDomain: CONFIG_CLIENTE.authDomain,
-  projectId: CONFIG_CLIENTE.projectId,
-};
-const app = initializeApp(firebaseConfig); const db = getFirestore(app); const $=id=>document.getElementById(id);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
 $('nomeLojaLogin').innerText = CONFIG_CLIENTE.nome;
 $('tituloSistema').innerText = CONFIG_CLIENTE.nome + " PDV V18.30";
