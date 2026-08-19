@@ -36,14 +36,14 @@
 <nav class="menu"><button onclick="mostrarAba('venda')" id="btn-venda" class="on">VENDAS</button><button onclick="mostrarAba('produtos')" id="btn-produtos">PRODUTOS</button><button onclick="mostrarAba('clientes')" id="btn-clientes">CLIENTES</button><button onclick="mostrarAba('fornecedores')" id="btn-fornecedores">FORNEC</button><button onclick="mostrarAba('loja')" id="btn-loja">LOJA</button><button onclick="mostrarAba('receber')" id="btn-receber">RECEBER</button><button onclick="mostrarAba('pagar')" id="btn-pagar">PAGAR</button><button onclick="mostrarAba('relatorios')" id="btn-relatorios">RELAT</button><button onclick="mostrarAba('caixa')" id="btn-caixa">CAIXA</button><button onclick="sair()">SAIR</button></nav>
 
 <script type="module">
-// ===== CONFIGURAÇÃO DO CLIENTE =====
-const CONFIG_CLIENTE = {
-  nome: "MERCEARIA PARAISO",
-  projectId: "web-pdv-6546d",
-  apiKey: "AIzaSyBaR2gOjcWkQ625WuVPFFcZndrsKk3MqGY",
-  authDomain: "web-pdv-6546d.firebaseapp.com",
-}
-// ===== FIM DA CONFIG =====
+const firebaseConfig = {
+  apiKey: "AIzaSyAXxrkC5188jhlCZTkm1RXlbPkErSzvkUg",
+  authDomain: "mercearia-paraiso.firebaseapp.com",
+  projectId: "mercearia-paraiso",
+  storageBucket: "mercearia-paraiso.firebasestorage.app",
+  messagingSenderId: "415422197156",
+  appId: "1:415422197156:web:d6e7d55a013b2edf58a531"
+};
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, getDocs, setDoc, writeBatch, query, limit, orderBy } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
